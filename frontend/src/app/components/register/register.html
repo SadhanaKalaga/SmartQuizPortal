@@ -1,0 +1,23 @@
+<div class="container">
+  <h2>Register</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label>Name:</label>
+      <input type="text" [(ngModel)]="name" name="name" required>
+    </div>
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="email" name="email" required>
+    </div>
+    <div>
+      <label>Role:</label>
+      <select [(ngModel)]="role" name="role">
+        <option value="student">Student</option>
+        <option value="faculty">Faculty</option>
+      </select>
+    </div>
+    <button type="submit">Register</button>
+    <p *ngIf="error" class="error">{{ error }}</p>
+  </form>
+  <p>Already have an account? <a routerLink="/login">Login</a></p>
+</div>
