@@ -1,9 +1,9 @@
-# SmartQuizPortal — MERN Stack Online Quiz Platform
+# SmartQuizPortal — MEAN Stack Online Quiz Platform
 
 ## 1. Introduction
 
 ### 1.1 Purpose
-This document defines the technical design for SmartQuizPortal, an online quiz and assessment platform built using the MERN stack. Faculty can upload and manage quizzes, while students can attempt quizzes within a fixed time limit and view results instantly.
+This document defines the technical design for SmartQuizPortal, an online quiz and assessment platform built using the MEAN stack (MongoDB, Express, Angular, Node.js). Faculty can upload and manage quizzes, while students can attempt quizzes within a fixed time limit and view results instantly.
 
 ### 1.2 Target Audience
 - Faculty / Instructors
@@ -11,7 +11,7 @@ This document defines the technical design for SmartQuizPortal, an online quiz a
 - Developers learning full-stack development
 
 ### 1.3 Learning Outcomes
-- MERN stack implementation
+- MEAN stack implementation
 - Real-time quiz management
 - Automatic evaluation system
 - User authentication & authorization
@@ -35,7 +35,7 @@ This document defines the technical design for SmartQuizPortal, an online quiz a
 
 ## 3. High-Level Architecture
 ```
-[ React Frontend ]
+[ Angular Frontend ]
         |
    [ REST API ]
         |
@@ -143,22 +143,25 @@ backend/
 - Faculty-only routes protected
 - Student access restrictions enforced
 
-## 6. Frontend (React)
+## 6. Frontend (Angular)
 
 ### 6.1 Tech Stack
-- React
-- React Router
-- Axios
-- Material-UI / Bootstrap
+- Angular 19+
+- Angular Router
+- RxJS
+- HttpClient
+- Standalone Components
 
 ### 6.2 Folder Structure
 ```
 src/
-├── components/
-├── pages/
-├── context/
-├── services/
-└── App.jsx
+├── app/
+│   ├── components/
+│   ├── services/
+│   ├── interceptors/
+│   ├── app.routes.ts
+│   └── app.config.ts
+└── styles.css
 ```
 
 ### 6.3 Key Pages
@@ -166,6 +169,7 @@ src/
 - Student Dashboard
 - Faculty Dashboard
 - Quiz Attempt Page
+- Quiz Create Page
 - Results Page
 
 ## 7. Quiz Management System
@@ -204,7 +208,26 @@ src/
 - Plagiarism detection
 
 ## 11. Conclusion
-This project demonstrates a complete MERN stack implementation for educational assessment, providing hands-on experience with modern web development practices and real-time quiz management systems.
+This project demonstrates a complete MEAN stack implementation for educational assessment, providing hands-on experience with modern web development practices and real-time quiz management systems.
+
+## 12. Running the Application
+
+### Backend Setup
+```bash
+cd backend
+npm install
+# Update .env with your MongoDB URI and JWT_SECRET
+npm run dev
+```
+
+### Frontend Setup
+```bash
+cd frontend
+npm install
+ng serve
+```
+
+Access the application at `http://localhost:4200`
 
 **Project Name:** SmartQuizPortal  
 **Document Owner:** K. Sadhana
