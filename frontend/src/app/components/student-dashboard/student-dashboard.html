@@ -1,0 +1,46 @@
+<div class="container">
+  <header>
+    <h2>Student Dashboard</h2>
+    <div>
+      <span>Welcome, {{ user?.name }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <section>
+    <h3>Available Quizzes</h3>
+    <div *ngIf="quizzes.length === 0">No quizzes available</div>
+    <div class="quiz-list">
+      <div *ngFor="let quiz of quizzes" class="quiz-card">
+        <h4>{{ quiz.title }}</h4>
+        <p>{{ quiz.description }}</p>
+        <p>Time Limit: {{ quiz.timeLimit }} minutes</p>
+        <p>Questions: {{ quiz.questions.length }}</p>
+        <button (click)="attemptQuiz(quiz._id)">Attempt Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>My Attempts</h3>
+    <div *ngIf="attempts.length === 0">No attempts yet</div>
+    <table *ngIf="attempts.length > 0">
+      <thead>
+        <tr>
+          <th>Quiz</th>
+          <th>Score</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let attempt of attempts">
+          <td>{{ attempt.quizId?.title }}</td>
+          <td>{{ attempt.score }}/{{ attempt.totalQuestions }}</td>
+          <td>{{ attempt.completedAt | date:'short' }}</td>
+          <td><button (click)="viewResult(attempt._id)">View</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
