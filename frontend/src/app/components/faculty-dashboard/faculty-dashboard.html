@@ -1,0 +1,27 @@
+<div class="container">
+  <header>
+    <h2>Faculty Dashboard</h2>
+    <div>
+      <span>Welcome, {{ user?.name }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <section>
+    <div class="header-actions">
+      <h3>My Quizzes</h3>
+      <button (click)="createQuiz()">Create New Quiz</button>
+    </div>
+    <div *ngIf="quizzes.length === 0">No quizzes created yet</div>
+    <div class="quiz-list">
+      <div *ngFor="let quiz of quizzes" class="quiz-card">
+        <h4>{{ quiz.title }}</h4>
+        <p>{{ quiz.description }}</p>
+        <p>Questions: {{ quiz.questions.length }}</p>
+        <p>Time Limit: {{ quiz.timeLimit }} minutes</p>
+        <p>Status: {{ quiz.isActive ? 'Active' : 'Inactive' }}</p>
+        <button (click)="deleteQuiz(quiz._id)">Delete</button>
+      </div>
+    </div>
+  </section>
+</div>
