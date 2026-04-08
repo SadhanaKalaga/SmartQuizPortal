@@ -1,0 +1,12 @@
+<div class="container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="email" name="email" required>
+    </div>
+    <button type="submit">Login</button>
+    <p *ngIf="error" class="error">{{ error }}</p>
+  </form>
+  <p>Don't have an account? <a routerLink="/register">Register</a></p>
+</div>
