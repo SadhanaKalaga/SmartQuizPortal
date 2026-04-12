@@ -57,8 +57,13 @@ const seedDatabase = async () => {
     await Quiz.deleteMany({});
     await Attempt.deleteMany({});
     
-    // Insert sample users
-    const users = await User.insertMany(sampleUsers);
+    // Insert sample users using create() to trigger password hashing
+    const users = [];
+    for (const userData of sampleUsers) {
+      const user = await User.create(userData);
+      users.push(user);
+    }
+    
     console.log('Sample users created');
     console.log('Login credentials:');
     console.log('Student - email: student@test.com, password: password123');
