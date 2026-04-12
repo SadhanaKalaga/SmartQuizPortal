@@ -12,7 +12,13 @@ exports.createQuiz = async (req, res) => {
 
     const { title, description, questions, timeLimit, startTime, endTime, maxAttempts } = req.body;
     
-    console.log('Creating quiz:', { title, facultyId: req.user._id, questionsCount: questions?.length });
+    console.log('Creating quiz:', { 
+      title, 
+      facultyId: req.user._id, 
+      facultyEmail: req.user.email,
+      facultyName: req.user.name,
+      questionsCount: questions?.length 
+    });
     
     const quiz = await Quiz.create({
       title,
