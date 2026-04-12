@@ -3,85 +3,94 @@
 ## ✅ Application Status
 
 ### Backend
-- **Status**: Running
+- **Status**: Ready
 - **URL**: http://localhost:5000
 - **API Base**: http://localhost:5000/api
 
 ### Frontend
-- **Status**: Running
+- **Status**: Ready
 - **URL**: http://localhost:4200
 
 ### Database
-- **Status**: Connection issue (DNS resolution)
-- **Note**: MongoDB Atlas cluster may need network access configuration
-- **Action Required**: Check MongoDB Atlas network access settings
+- **MongoDB Atlas**: Configured
+- **Action**: Ensure network access is configured in MongoDB Atlas
+
+## 🚀 Quick Start
+
+### 1. Start Backend
+```bash
+cd backend
+npm run dev
+```
+
+### 2. Start Frontend
+```bash
+cd frontend
+npm start
+```
+
+### 3. Seed Database (Optional)
+```bash
+cd backend
+npm run seed
+```
+
+This creates test accounts:
+- **Student**: email: `student@test.com`, password: `password123`
+- **Faculty**: email: `faculty@test.com`, password: `password123`
 
 ## 🧪 Testing the Application
 
-### 1. Access the Application
-Open your browser and navigate to: **http://localhost:4200**
+### Test User Registration
+1. Navigate to http://localhost:4200
+2. Click "Register"
+3. Fill in:
+   - Name: Your Name
+   - Email: your@email.com
+   - Password: minimum 6 characters
+   - Role: Student or Faculty
+4. Click "Register"
 
-### 2. Test User Registration
-1. Click "Register" link
-2. Fill in:
-   - Name: Test Student
-   - Email: student@test.com
-   - Role: Student
-3. Click "Register"
+### Test Login
+1. Use seeded credentials or your registered account
+2. Enter email and password
+3. Click "Login"
+4. You'll be redirected based on your role
 
-### 3. Test Faculty Registration
-1. Register another user:
-   - Name: Test Faculty
-   - Email: faculty@test.com
-   - Role: Faculty
-
-### 4. Test Faculty Features
-1. Login as faculty@test.com
+### Test Faculty Features
+1. Login as faculty
 2. Click "Create New Quiz"
-3. Fill in quiz details:
-   - Title: Sample Quiz
-   - Description: Test quiz
-   - Time Limit: 10 minutes
+3. Fill in:
+   - Title: Quiz name
+   - Description: Quiz description
+   - Time Limit: Minutes
    - Add questions with 4 options each
-4. Submit the quiz
+   - Mark correct answer
+4. Submit quiz
 
-### 5. Test Student Features
-1. Logout and login as student@test.com
+### Test Student Features
+1. Login as student
 2. View available quizzes
 3. Click "Attempt Quiz"
-4. Answer questions (timer will count down)
+4. Answer questions (timer counts down)
 5. Submit quiz
-6. View results with correct answers
+6. View results with score
 
-## 🔧 MongoDB Connection Issue
+## 🔒 Security Features Implemented
 
-The application is running but MongoDB connection failed with DNS error.
-
-### To Fix:
-1. **Check MongoDB Atlas**:
-   - Go to https://cloud.mongodb.com
-   - Navigate to Network Access
-   - Add your IP address or allow access from anywhere (0.0.0.0/0)
-
-2. **Verify Connection String**:
-   - Current: `mongodb+srv://ksaana2006_db_user:***REMOVED***@smartquizportal.dvbshe9.mongodb.net/smartquizportal`
-   - Ensure cluster is active and accessible
-
-3. **Alternative - Use Local MongoDB**:
-   ```bash
-   # Install MongoDB locally
-   sudo apt install mongodb
-   
-   # Update .env
-   MONGODB_URI=mongodb://localhost:27017/smartquizportal
-   ```
+✅ Password hashing with bcrypt
+✅ JWT authentication
+✅ Route guards (auth & role-based)
+✅ Input validation on backend
+✅ Protected API endpoints
+✅ Automatic token refresh handling
 
 ## 📝 API Endpoints
 
 ### Authentication
 - POST `/api/auth/register` - Register new user
 - POST `/api/auth/login` - Login user
-- GET `/api/auth/me` - Get current user
+- GET `/api/auth/me` - Get current user (requires auth)
 
 ### Quizzes
 - POST `/api/quizzes` - Create quiz (Faculty only)
@@ -97,57 +106,50 @@ The application is running but MongoDB connection failed with DNS error.
 - GET `/api/attempts/:id` - Get attempt details
 - GET `/api/attempts/quiz/:quizId` - Get all attempts for a quiz (Faculty only)
 
-## 🎯 Features Implemented
+## 🎯 Features Completed
 
 ### Backend
-✅ JWT Authentication
-✅ Role-based Authorization (Student/Faculty)
+✅ JWT Authentication with password hashing
+✅ Role-based Authorization
+✅ Input validation with express-validator
 ✅ Quiz CRUD Operations
 ✅ Automatic Quiz Scoring
 ✅ Attempt Tracking
 ✅ RESTful API Design
 
 ### Frontend
-✅ Angular 19 with Standalone Components
+✅ Angular 19 Standalone Components
+✅ Auth & Role Guards
+✅ HTTP Interceptors (Auth + Error)
 ✅ Reactive Forms
-✅ HTTP Interceptor for Auth
-✅ Role-based Routing
 ✅ Student Dashboard
 ✅ Faculty Dashboard
-✅ Quiz Creation Form
+✅ Quiz Creation
 ✅ Quiz Attempt with Timer
 ✅ Results Display
 ✅ Responsive Design
 
-## 🚀 Next Steps
+## 🔧 Troubleshooting
 
-1. **Fix MongoDB Connection**: Configure network access in MongoDB Atlas
-2. **Test All Features**: Once DB is connected, test complete flow
-3. **Add Seed Data**: Run `npm run seed` in backend to populate test data
-4. **Deploy**: Consider deploying to cloud platforms
+### MongoDB Connection Issues
+1. Check MongoDB Atlas network access
+2. Verify connection string in `.env`
+3. Ensure cluster is active
 
-## 📊 Project Statistics
+### CORS Issues
+- Backend has CORS enabled for all origins in development
 
-- **Total Commits**: 25
-- **Backend Files**: 11
-- **Frontend Components**: 7
-- **Services**: 3
-- **Routes**: 3 route files
-- **Lines of Code**: ~2000+
+### Port Already in Use
+```bash
+# Kill process on port 5000
+lsof -ti:5000 | xargs kill -9
 
-## 🎓 Learning Outcomes Achieved
-
-✅ MEAN Stack Implementation
-✅ RESTful API Design
-✅ JWT Authentication
-✅ Role-based Authorization
-✅ Angular Standalone Components
-✅ Reactive Programming with RxJS
-✅ MongoDB Schema Design
-✅ Git Version Control
+# Kill process on port 4200
+lsof -ti:4200 | xargs kill -9
+```
 
 ---
 **Project**: SmartQuizPortal
 **Stack**: MongoDB, Express, Angular, Node.js
 **Author**: K. Sadhana
-**Date**: April 8, 2026
+**Updated**: April 12, 2026
