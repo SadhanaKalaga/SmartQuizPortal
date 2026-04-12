@@ -33,7 +33,15 @@ export class StudentDashboardComponent implements OnInit {
 
   loadQuizzes(): void {
     this.quizService.getAllQuizzes().subscribe({
-      next: (res) => this.quizzes = res.quizzes,
+      next: (res) => {
+        this.quizzes = res.quizzes;
+        // If backend provides attempt info, use it
+        if (this.quizzes.length > 0 && this.quizzes[0].attemptCount !== undefined) {
+          this.quizzes.forEach(quiz => {
+            this.attemptCounts.set(quiz._id, quiz.attemptCount);
+          });
+        }
+      },
       error: (err) => console.error(err)
     });
   }

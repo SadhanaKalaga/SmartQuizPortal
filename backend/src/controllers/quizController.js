@@ -6,10 +6,13 @@ exports.createQuiz = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       return res.status(400).json({ message: errors.array()[0].msg });
     }
 
     const { title, description, questions, timeLimit, startTime, endTime, maxAttempts } = req.body;
+    
+    console.log('Creating quiz:', { title, facultyId: req.user._id, questionsCount: questions?.length });
     
     const quiz = await Quiz.create({
       title,
@@ -22,8 +25,10 @@ exports.createQuiz = async (req, res) => {
       facultyId: req.user._id
     });
 
+    console.log('Quiz created successfully:', quiz._id);
     res.status(201).json({ quiz });
   } catch (error) {
+    console.error('Create quiz error:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -38,6 +43,25 @@ exports.getAllQuizzes = async (req, res) => {
     })
       .populate('facultyId', 'name email')
       .select('-questions.correctAnswer');
+
+    // For students, add attempt information
+    if (req.user.role === 'student') {
+      const quizzesWithAttempts = await Promise.all(
+        quizzes.map(async (quiz) => {
+          const attemptCount = await Attempt.countDocuments({
+            studentId: req.user._id,
+            quizId: quiz._id
+          });
+          return {
+            ...quiz.toObject(),
+            attemptCount,
+            attemptsLeft: quiz.maxAttempts - attemptCount,
+            canAttempt: attemptCount < quiz.maxAttempts
+          };
+        })
+      );
+      return res.json({ quizzes: quizzesWithAttempts });
+    }
 
     res.json({ quizzes });
   } catch (error) {
