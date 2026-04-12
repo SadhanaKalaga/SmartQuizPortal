@@ -16,6 +16,7 @@ export class StudentDashboardComponent implements OnInit {
   quizzes: any[] = [];
   attempts: any[] = [];
   user: any;
+  attemptCounts: Map<string, number> = new Map();
 
   constructor(
     private quizService: QuizService,
@@ -39,9 +40,28 @@ export class StudentDashboardComponent implements OnInit {
 
   loadAttempts(): void {
     this.attemptService.getMyAttempts().subscribe({
-      next: (res) => this.attempts = res.attempts,
+      next: (res) => {
+        this.attempts = res.attempts;
+        // Count attempts per quiz
+        this.attempts.forEach(attempt => {
+          const quizId = attempt.quizId._id || attempt.quizId;
+          this.attemptCounts.set(quizId, (this.attemptCounts.get(quizId) || 0) + 1);
+        });
+      },
       error: (err) => console.error(err)
     });
+  }
+
+  getAttemptCount(quizId: string): number {
+    return this.attemptCounts.get(quizId) || 0;
+  }
+
+  getAttemptsLeft(quiz: any): number {
+    return quiz.maxAttempts - this.getAttemptCount(quiz._id);
+  }
+
+  canAttempt(quiz: any): boolean {
+    return this.getAttemptsLeft(quiz) > 0;
   }
 
   attemptQuiz(quizId: string): void {

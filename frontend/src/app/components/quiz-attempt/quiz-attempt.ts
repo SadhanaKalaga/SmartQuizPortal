@@ -34,7 +34,10 @@ export class QuizAttemptComponent implements OnInit {
         this.answers = this.quiz.questions.map((_: any, i: number) => ({ questionIndex: i, selectedOption: -1 }));
         this.startTimer();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        alert(err.error?.message || 'Cannot access quiz');
+        this.router.navigate(['/student-dashboard']);
+      }
     });
   }
 

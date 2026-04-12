@@ -1,46 +1,46 @@
-<div class="container">
-  <header>
-    <h2>Student Dashboard</h2>
-    <div>
-      <span>Welcome, {{ user?.name }}</span>
-      <button (click)="logout()">Logout</button>
-    </div>
-  </header>
+<div class="dashboard-container">
+  <h2>Student Dashboard - Welcome, {{ user?.name }}</h2>
 
   <section>
     <h3>Available Quizzes</h3>
-    <div *ngIf="quizzes.length === 0">No quizzes available</div>
+    <div *ngIf="quizzes.length === 0" class="text-center">No quizzes available</div>
     <div class="quiz-list">
       <div *ngFor="let quiz of quizzes" class="quiz-card">
-        <h4>{{ quiz.title }}</h4>
+        <h3>{{ quiz.title }}</h3>
         <p>{{ quiz.description }}</p>
-        <p>Time Limit: {{ quiz.timeLimit }} minutes</p>
-        <p>Questions: {{ quiz.questions.length }}</p>
-        <button (click)="attemptQuiz(quiz._id)">Attempt Quiz</button>
+        <div class="quiz-meta">
+          <span>⏱️ {{ quiz.timeLimit }} min</span>
+          <span>📝 {{ quiz.questions?.length }} questions</span>
+          <span>🔄 Max attempts: {{ quiz.maxAttempts }}</span>
+        </div>
+        <div class="attempt-info">
+          <p *ngIf="getAttemptCount(quiz._id) > 0" class="success">
+            ✅ Attempted {{ getAttemptCount(quiz._id) }} time(s)
+          </p>
+          <p *ngIf="canAttempt(quiz)" class="success">
+            {{ getAttemptsLeft(quiz) }} attempt(s) left
+          </p>
+          <p *ngIf="!canAttempt(quiz)" class="error">
+            ❌ No attempts left - You already submitted
+          </p>
+        </div>
+        <button (click)="attemptQuiz(quiz._id)" [disabled]="!canAttempt(quiz)">
+          {{ canAttempt(quiz) ? 'Attempt Quiz' : 'No Attempts Left' }}
+        </button>
       </div>
     </div>
   </section>
 
-  <section>
+  <section class="mt-2">
     <h3>My Attempts</h3>
-    <div *ngIf="attempts.length === 0">No attempts yet</div>
-    <table *ngIf="attempts.length > 0">
-      <thead>
-        <tr>
-          <th>Quiz</th>
-          <th>Score</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let attempt of attempts">
-          <td>{{ attempt.quizId?.title }}</td>
-          <td>{{ attempt.score }}/{{ attempt.totalQuestions }}</td>
-          <td>{{ attempt.completedAt | date:'short' }}</td>
-          <td><button (click)="viewResult(attempt._id)">View</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="attempts.length === 0" class="text-center">No attempts yet</div>
+    <div *ngFor="let attempt of attempts" class="quiz-card">
+      <h3>{{ attempt.quizId?.title }}</h3>
+      <div class="quiz-meta">
+        <span>Score: {{ attempt.score }}/{{ attempt.totalQuestions }}</span>
+        <span>{{ attempt.completedAt | date:'short' }}</span>
+      </div>
+      <button (click)="viewResult(attempt._id)" class="btn-secondary">View Results</button>
+    </div>
   </section>
 </div>
