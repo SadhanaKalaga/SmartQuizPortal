@@ -3,6 +3,7 @@ const User = require('./models/User');
 const Quiz = require('./models/Quiz');
 const Attempt = require('./models/Attempt');
 const connectDB = require('./utils/Connect');
+require('dotenv').config();
 
 // Sample data
 const sampleUsers = [

@@ -143,7 +143,12 @@ exports.toggleAnswers = async (req, res) => {
     }
 
     if (quiz.facultyId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized' });
+      console.log('Authorization failed:', {
+        quizFacultyId: quiz.facultyId.toString(),
+        userId: req.user._id.toString(),
+        userRole: req.user.role
+      });
+      return res.status(403).json({ message: 'Not authorized - You can only toggle answers for your own quizzes' });
     }
 
     quiz.showAnswers = !quiz.showAnswers;
@@ -151,6 +156,7 @@ exports.toggleAnswers = async (req, res) => {
 
     res.json({ quiz, message: `Answers ${quiz.showAnswers ? 'released' : 'hidden'}` });
   } catch (error) {
+    console.error('Toggle answers error:', error);
     res.status(500).json({ message: error.message });
   }
 };
