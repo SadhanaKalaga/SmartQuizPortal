@@ -14,21 +14,35 @@ import { AuthService } from '../../services/auth';
 export class RegisterComponent {
   name = '';
   email = '';
+  password = '';
   role = 'student';
   error = '';
+  loading = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(): void {
-    this.authService.register({ name: this.name, email: this.email, role: this.role }).subscribe({
+    this.loading = true;
+    this.error = '';
+    
+    this.authService.register({ 
+      name: this.name, 
+      email: this.email, 
+      password: this.password,
+      role: this.role 
+    }).subscribe({
       next: (res) => {
+        this.loading = false;
         if (res.user.role === 'student') {
           this.router.navigate(['/student-dashboard']);
         } else {
           this.router.navigate(['/faculty-dashboard']);
         }
       },
-      error: (err) => this.error = err.error.message || 'Registration failed'
+      error: (err) => {
+        this.loading = false;
+        this.error = err.error?.message || 'Registration failed';
+      }
     });
   }
 }
