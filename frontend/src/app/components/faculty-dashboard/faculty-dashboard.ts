@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { QuizService } from '../../services/quiz';
+import { AttemptService } from '../../services/attempt';
 import { AuthService } from '../../services/auth';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-faculty-dashboard',
@@ -14,9 +16,11 @@ import { AuthService } from '../../services/auth';
 export class FacultyDashboardComponent implements OnInit {
   quizzes: any[] = [];
   user: any;
+  attemptCounts: Map<string, number> = new Map();
 
   constructor(
     private quizService: QuizService,
+    private attemptService: AttemptService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -28,9 +32,33 @@ export class FacultyDashboardComponent implements OnInit {
 
   loadQuizzes(): void {
     this.quizService.getMyQuizzes().subscribe({
-      next: (res) => this.quizzes = res.quizzes,
+      next: (res) => {
+        this.quizzes = res.quizzes;
+        this.loadAttemptCounts();
+      },
       error: (err) => console.error(err)
     });
+  }
+
+  loadAttemptCounts(): void {
+    const requests = this.quizzes.map(quiz => 
+      this.attemptService.getQuizAttempts(quiz._id)
+    );
+
+    forkJoin(requests).subscribe({
+      next: (results: any[]) => {
+        results.forEach((res, index) => {
+          const quizId = this.quizzes[index]._id;
+          const uniqueStudents = new Set(res.attempts.map((a: any) => a.studentId._id || a.studentId));
+          this.attemptCounts.set(quizId, uniqueStudents.size);
+        });
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  getAttemptCount(quizId: string): number {
+    return this.attemptCounts.get(quizId) || 0;
   }
 
   createQuiz(): void {

@@ -1,26 +1,31 @@
-<div class="container">
-  <header>
-    <h2>Faculty Dashboard</h2>
-    <div>
-      <span>Welcome, {{ user?.name }}</span>
-      <button (click)="logout()">Logout</button>
-    </div>
-  </header>
+<div class="dashboard-container">
+  <h2>Faculty Dashboard - Welcome, {{ user?.name }}</h2>
 
   <section>
-    <div class="header-actions">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
       <h3>My Quizzes</h3>
-      <button (click)="createQuiz()">Create New Quiz</button>
+      <button (click)="createQuiz()">+ Create New Quiz</button>
     </div>
-    <div *ngIf="quizzes.length === 0">No quizzes created yet</div>
+    <div *ngIf="quizzes.length === 0" class="text-center">No quizzes created yet</div>
     <div class="quiz-list">
       <div *ngFor="let quiz of quizzes" class="quiz-card">
-        <h4>{{ quiz.title }}</h4>
+        <h3>{{ quiz.title }}</h3>
         <p>{{ quiz.description }}</p>
-        <p>Questions: {{ quiz.questions.length }}</p>
-        <p>Time Limit: {{ quiz.timeLimit }} minutes</p>
-        <p>Status: {{ quiz.isActive ? 'Active' : 'Inactive' }}</p>
-        <button (click)="deleteQuiz(quiz._id)">Delete</button>
+        <div class="quiz-meta">
+          <span>📝 {{ quiz.questions?.length }} questions</span>
+          <span>⏱️ {{ quiz.timeLimit }} min</span>
+          <span>🔄 Max attempts: {{ quiz.maxAttempts }}</span>
+        </div>
+        <div class="quiz-meta">
+          <span>📅 Start: {{ quiz.startTime | date:'short' }}</span>
+          <span>📅 End: {{ quiz.endTime | date:'short' }}</span>
+        </div>
+        <div class="attempt-info">
+          <p class="success">
+            👥 <strong>{{ getAttemptCount(quiz._id) }}</strong> student(s) attempted this quiz
+          </p>
+        </div>
+        <button (click)="deleteQuiz(quiz._id)" class="btn-danger">Delete Quiz</button>
       </div>
     </div>
   </section>

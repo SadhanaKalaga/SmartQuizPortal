@@ -30,3 +30,16 @@
     transform: translateY(0);
   }
 }
+
+.attempt-info {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.attempt-info p {
+  margin: 0;
+  font-size: 1.05rem;
+}
