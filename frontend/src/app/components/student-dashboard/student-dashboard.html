@@ -1,9 +1,16 @@
 <div class="dashboard-container">
-  <h2>Student Dashboard - Welcome, {{ user?.name }}</h2>
+  <div class="dashboard-header">
+    <h2>Student Dashboard</h2>
+    <p class="welcome">Welcome back, <strong>{{ user?.name }}</strong></p>
+  </div>
 
   <section>
-    <h3>Available Quizzes</h3>
-    <div *ngIf="quizzes.length === 0" class="text-center">No quizzes available</div>
+    <div class="section-header">
+      <h3>📚 Available Quizzes</h3>
+    </div>
+    <div *ngIf="quizzes.length === 0" class="empty-state">
+      <p>📝 No quizzes available</p>
+    </div>
     <div class="quiz-list">
       <div *ngFor="let quiz of quizzes" class="quiz-card">
         <h3>{{ quiz.title }}</h3>
@@ -32,8 +39,12 @@
   </section>
 
   <section class="mt-2">
-    <h3>My Attempts</h3>
-    <div *ngIf="attempts.length === 0" class="text-center">No attempts yet</div>
+    <div class="section-header">
+      <h3>📊 My Attempts</h3>
+    </div>
+    <div *ngIf="attempts.length === 0" class="empty-state">
+      <p>📝 No attempts yet</p>
+    </div>
     <div *ngFor="let attempt of attempts" class="quiz-card">
       <h3>{{ attempt.quizId?.title }}</h3>
       <div class="quiz-meta">
