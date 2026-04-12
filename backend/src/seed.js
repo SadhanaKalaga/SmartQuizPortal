@@ -8,12 +8,14 @@ const connectDB = require('./utils/Connect');
 const sampleUsers = [
   {
     name: "John Doe",
-    email: "john.doe@example.com",
+    email: "student@test.com",
+    password: "password123",
     role: "student"
   },
   {
     name: "Jane Smith", 
-    email: "jane.smith@example.com",
+    email: "faculty@test.com",
+    password: "password123",
     role: "faculty"
   }
 ];
@@ -53,6 +55,9 @@ const seedDatabase = async () => {
     // Insert sample users
     const users = await User.insertMany(sampleUsers);
     console.log('Sample users created');
+    console.log('Login credentials:');
+    console.log('Student - email: student@test.com, password: password123');
+    console.log('Faculty - email: faculty@test.com, password: password123');
     
     // Insert sample quizzes with faculty reference
     const faculty = users.find(user => user.role === 'faculty');

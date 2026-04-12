@@ -1,7 +1,13 @@
+const { validationResult } = require('express-validator');
 const Quiz = require('../models/Quiz');
 
 exports.createQuiz = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: errors.array()[0].msg });
+    }
+
     const { title, description, questions, timeLimit } = req.body;
     
     const quiz = await Quiz.create({
