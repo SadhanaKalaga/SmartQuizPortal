@@ -133,3 +133,24 @@ exports.getMyQuizzes = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.toggleAnswers = async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id);
+
+    if (!quiz) {
+      return res.status(404).json({ message: 'Quiz not found' });
+    }
+
+    if (quiz.facultyId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    quiz.showAnswers = !quiz.showAnswers;
+    await quiz.save();
+
+    res.json({ quiz, message: `Answers ${quiz.showAnswers ? 'released' : 'hidden'}` });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -10,11 +10,16 @@
 
   <div class="answers-review">
     <h3>Your Answers</h3>
+    <div *ngIf="!attempt.quizId?.showAnswers" class="info-message">
+      ℹ️ Correct answers will be visible once the faculty releases them.
+    </div>
     <div *ngFor="let answer of attempt.answers; let i = index" class="answer-item">
       <p><strong>Question {{ answer.questionIndex + 1 }}</strong></p>
       <p>{{ attempt.quizId?.questions[answer.questionIndex]?.question }}</p>
       <p>Your answer: {{ attempt.quizId?.questions[answer.questionIndex]?.options[answer.selectedOption] }}</p>
-      <p class="correct">Correct answer: {{ attempt.quizId?.questions[answer.questionIndex]?.options[attempt.quizId?.questions[answer.questionIndex]?.correctAnswer] }}</p>
+      <p *ngIf="attempt.quizId?.showAnswers" class="correct">
+        Correct answer: {{ attempt.quizId?.questions[answer.questionIndex]?.options[attempt.quizId?.questions[answer.questionIndex]?.correctAnswer] }}
+      </p>
     </div>
   </div>
 

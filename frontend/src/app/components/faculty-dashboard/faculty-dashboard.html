@@ -65,8 +65,11 @@
         </div>
 
         <div class="quiz-actions">
-          <button (click)="editQuiz(quiz._id)" class="btn-edit">✏️ Edit Quiz</button>
-          <button (click)="deleteQuiz(quiz._id)" class="btn-delete">🗑️ Delete Quiz</button>
+          <button (click)="toggleAnswers(quiz)" [class.btn-success]="quiz.showAnswers" class="btn-toggle">
+            {{ quiz.showAnswers ? '✓ Answers Released' : '🔒 Release Answers' }}
+          </button>
+          <button (click)="editQuiz(quiz._id)" class="btn-edit">✏️ Edit</button>
+          <button (click)="deleteQuiz(quiz._id)" class="btn-delete">🗑️ Delete</button>
         </div>
       </div>
     </div>

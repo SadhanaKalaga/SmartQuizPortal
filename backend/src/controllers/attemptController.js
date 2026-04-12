@@ -60,6 +60,16 @@ exports.getAttemptById = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
+    // Hide correct answers if faculty hasn't released them
+    if (req.user.role === 'student' && !attempt.quizId.showAnswers) {
+      const sanitizedAttempt = attempt.toObject();
+      sanitizedAttempt.quizId.questions = sanitizedAttempt.quizId.questions.map(q => {
+        const { correctAnswer, ...rest } = q;
+        return rest;
+      });
+      return res.json({ attempt: sanitizedAttempt });
+    }
+
     res.json({ attempt });
   } catch (error) {
     res.status(500).json({ message: error.message });

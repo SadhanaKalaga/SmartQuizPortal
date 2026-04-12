@@ -34,4 +34,8 @@ export class QuizService {
   deleteQuiz(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  toggleAnswers(id: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/toggle-answers`, {});
+  }
 }

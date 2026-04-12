@@ -55,6 +55,10 @@ const quizSchema = new mongoose.Schema({
     default: 1,
     min: 1
   },
+  showAnswers: {
+    type: Boolean,
+    default: false
+  },
   isActive: {
     type: Boolean,
     default: true

@@ -78,6 +78,16 @@ export class FacultyDashboardComponent implements OnInit {
     }
   }
 
+  toggleAnswers(quiz: any): void {
+    this.quizService.toggleAnswers(quiz._id).subscribe({
+      next: (res) => {
+        quiz.showAnswers = res.quiz.showAnswers;
+        alert(res.message);
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

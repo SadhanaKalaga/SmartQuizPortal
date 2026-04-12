@@ -6,7 +6,8 @@ const {
   getQuizById, 
   updateQuiz, 
   deleteQuiz,
-  getMyQuizzes 
+  getMyQuizzes,
+  toggleAnswers
 } = require('../controllers/quizController');
 const { authenticate, authorize } = require('../middleware/auth');
 
@@ -25,6 +26,7 @@ router.get('/', authenticate, getAllQuizzes);
 router.get('/my-quizzes', authenticate, authorize('faculty'), getMyQuizzes);
 router.get('/:id', authenticate, getQuizById);
 router.put('/:id', authenticate, authorize('faculty'), updateQuiz);
+router.patch('/:id/toggle-answers', authenticate, authorize('faculty'), toggleAnswers);
 router.delete('/:id', authenticate, authorize('faculty'), deleteQuiz);
 
 module.exports = router;
