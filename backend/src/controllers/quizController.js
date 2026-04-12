@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Quiz = require('../models/Quiz');
+const Attempt = require('../models/Attempt');
 
 exports.createQuiz = async (req, res) => {
   try {
@@ -8,13 +9,16 @@ exports.createQuiz = async (req, res) => {
       return res.status(400).json({ message: errors.array()[0].msg });
     }
 
-    const { title, description, questions, timeLimit } = req.body;
+    const { title, description, questions, timeLimit, startTime, endTime, maxAttempts } = req.body;
     
     const quiz = await Quiz.create({
       title,
       description,
       questions,
       timeLimit,
+      startTime,
+      endTime,
+      maxAttempts: maxAttempts || 1,
       facultyId: req.user._id
     });
 
@@ -26,7 +30,12 @@ exports.createQuiz = async (req, res) => {
 
 exports.getAllQuizzes = async (req, res) => {
   try {
-    const quizzes = await Quiz.find({ isActive: true })
+    const now = new Date();
+    const quizzes = await Quiz.find({ 
+      isActive: true,
+      startTime: { $lte: now },
+      endTime: { $gte: now }
+    })
       .populate('facultyId', 'name email')
       .select('-questions.correctAnswer');
 
@@ -45,12 +54,32 @@ exports.getQuizById = async (req, res) => {
       return res.status(404).json({ message: 'Quiz not found' });
     }
 
-    // Hide correct answers for students
+    const now = new Date();
+    
+    // Check if quiz is available
     if (req.user.role === 'student') {
+      if (now < quiz.startTime) {
+        return res.status(403).json({ message: 'Quiz has not started yet' });
+      }
+      if (now > quiz.endTime) {
+        return res.status(403).json({ message: 'Quiz has ended' });
+      }
+
+      // Check attempt limit
+      const attemptCount = await Attempt.countDocuments({
+        studentId: req.user._id,
+        quizId: quiz._id
+      });
+
+      if (attemptCount >= quiz.maxAttempts) {
+        return res.status(403).json({ message: 'Maximum attempts reached' });
+      }
+
+      // Hide correct answers for students
       quiz.questions.forEach(q => q.correctAnswer = undefined);
     }
 
-    res.json({ quiz });
+    res.json({ quiz, attemptsLeft: quiz.maxAttempts - (await Attempt.countDocuments({ studentId: req.user._id, quizId: quiz._id })) });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

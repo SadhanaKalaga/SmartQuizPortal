@@ -14,6 +14,20 @@
       <input type="number" [(ngModel)]="timeLimit" name="timeLimit" min="1" required>
     </div>
 
+    <h3>Schedule</h3>
+    <div>
+      <label>Start Time:</label>
+      <input type="datetime-local" [(ngModel)]="startTime" name="startTime" required>
+    </div>
+    <div>
+      <label>End Time:</label>
+      <input type="datetime-local" [(ngModel)]="endTime" name="endTime" required>
+    </div>
+    <div>
+      <label>Maximum Attempts:</label>
+      <input type="number" [(ngModel)]="maxAttempts" name="maxAttempts" min="1" required>
+    </div>
+
     <h3>Questions</h3>
     <div *ngFor="let q of questions; let i = index" class="question-block">
       <h4>Question {{ i + 1 }}</h4>
@@ -42,6 +56,7 @@
     </div>
 
     <button type="button" (click)="addQuestion()">Add Question</button>
+    <p *ngIf="error" class="error">{{ error }}</p>
     <button type="submit">Create Quiz</button>
   </form>
 </div>

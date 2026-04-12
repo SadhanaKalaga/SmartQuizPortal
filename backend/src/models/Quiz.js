@@ -42,6 +42,19 @@ const quizSchema = new mongoose.Schema({
     required: true,
     min: 1
   },
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
+    required: true
+  },
+  maxAttempts: {
+    type: Number,
+    default: 1,
+    min: 1
+  },
   isActive: {
     type: Boolean,
     default: true
@@ -53,5 +66,6 @@ const quizSchema = new mongoose.Schema({
 // Indexes
 quizSchema.index({ facultyId: 1 });
 quizSchema.index({ isActive: 1 });
+quizSchema.index({ startTime: 1, endTime: 1 });
 
 module.exports = mongoose.model('Quiz', quizSchema);

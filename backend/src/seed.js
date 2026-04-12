@@ -39,6 +39,9 @@ const sampleQuizzes = [
       }
     ],
     timeLimit: 30,
+    startTime: new Date(),
+    endTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    maxAttempts: 3,
     isActive: true
   }
 ];

@@ -15,7 +15,10 @@ const router = express.Router();
 router.post('/', authenticate, authorize('faculty'), [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('timeLimit').isInt({ min: 1 }).withMessage('Time limit must be at least 1 minute'),
-  body('questions').isArray({ min: 1 }).withMessage('At least one question is required')
+  body('questions').isArray({ min: 1 }).withMessage('At least one question is required'),
+  body('startTime').isISO8601().withMessage('Valid start time is required'),
+  body('endTime').isISO8601().withMessage('Valid end time is required'),
+  body('maxAttempts').optional().isInt({ min: 1 }).withMessage('Max attempts must be at least 1')
 ], createQuiz);
 
 router.get('/', authenticate, getAllQuizzes);
