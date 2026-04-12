@@ -151,9 +151,16 @@ exports.deleteQuiz = async (req, res) => {
 
 exports.getMyQuizzes = async (req, res) => {
   try {
+    console.log('getMyQuizzes called by:', { 
+      userId: req.user._id, 
+      userRole: req.user.role,
+      userEmail: req.user.email 
+    });
     const quizzes = await Quiz.find({ facultyId: req.user._id });
+    console.log('Found quizzes:', quizzes.length, 'for faculty:', req.user._id);
     res.json({ quizzes });
   } catch (error) {
+    console.error('getMyQuizzes error:', error);
     res.status(500).json({ message: error.message });
   }
 };
