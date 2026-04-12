@@ -12,10 +12,10 @@ BACKEND_PID=$!
 # Wait for backend to start
 sleep 3
 
-# Start frontend
+# Start frontend (disable CLI prompts)
 echo "🎨 Starting Frontend Server..."
 cd ../frontend
-npm start &
+CI=true npm start &
 FRONTEND_PID=$!
 
 echo ""
