@@ -24,8 +24,13 @@ exports.authenticate = async (req, res, next) => {
 
 exports.authorize = (...roles) => {
   return (req, res, next) => {
+    console.log('Authorization check:', { 
+      userRole: req.user?.role, 
+      requiredRoles: roles,
+      userId: req.user?._id 
+    });
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied' });
+      return res.status(403).json({ message: `Access denied - ${roles.join(' or ')} role required` });
     }
     next();
   };
