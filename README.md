@@ -212,22 +212,97 @@ This project demonstrates a complete MEAN stack implementation for educational a
 
 ## 12. Running the Application
 
-### Backend Setup
+### Quick Start (Recommended)
+```bash
+./start.sh
+```
+
+### Manual Setup
+
+#### Backend Setup
 ```bash
 cd backend
 npm install
-# Update .env with your MongoDB URI and JWT_SECRET
+# Create .env file with:
+# MONGODB_URI=your_mongodb_connection_string
+# JWT_SECRET=your_secret_key
+# PORT=5000
 npm run dev
 ```
 
-### Frontend Setup
+#### Frontend Setup
 ```bash
 cd frontend
 npm install
-ng serve
+npm start
 ```
 
-Access the application at `http://localhost:4200`
+#### Seed Database (Optional)
+```bash
+cd backend
+npm run seed
+```
+
+Test credentials after seeding:
+- **Student**: email: `student@test.com`, password: `password123`
+- **Faculty**: email: `faculty@test.com`, password: `password123`
+
+### Access Points
+- **Frontend**: http://localhost:4200
+- **Backend API**: http://localhost:5000/api
+
+## 13. Features Completed
+
+### Security ✅
+- Password hashing with bcrypt
+- JWT authentication
+- Route guards (auth & role-based)
+- Input validation
+- Protected API endpoints
+- Error interceptor
+
+### Backend ✅
+- User authentication with passwords
+- Role-based authorization
+- Quiz CRUD operations
+- Automatic scoring
+- Attempt tracking
+- Input validation with express-validator
+
+### Frontend ✅
+- Modern UI with responsive design
+- Auth & role guards
+- HTTP interceptors
+- Logout functionality
+- Environment configuration
+- Loading states
+- Error handling
+
+## 14. Project Structure
+
+```
+SmartQuizPortal/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── middleware/
+│   │   ├── utils/
+│   │   └── app.js
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── components/
+│   │   │   ├── services/
+│   │   │   ├── guards/
+│   │   │   └── interceptors/
+│   │   └── environments/
+│   └── package.json
+├── start.sh
+└── README.md
+```
 
 **Project Name:** SmartQuizPortal  
 **Document Owner:** K. Sadhana
