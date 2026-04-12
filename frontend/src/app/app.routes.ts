@@ -33,6 +33,11 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard(['faculty'])]
   },
   { 
+    path: 'edit-quiz/:id', 
+    component: QuizCreateComponent,
+    canActivate: [authGuard, roleGuard(['faculty'])]
+  },
+  { 
     path: 'results/:id', 
     component: ResultsComponent,
     canActivate: [authGuard]

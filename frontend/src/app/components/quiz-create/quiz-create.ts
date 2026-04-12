@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { QuizService } from '../../services/quiz';
 
 @Component({
@@ -11,7 +11,7 @@ import { QuizService } from '../../services/quiz';
   templateUrl: './quiz-create.html',
   styleUrl: './quiz-create.css'
 })
-export class QuizCreateComponent {
+export class QuizCreateComponent implements OnInit {
   title = '';
   description = '';
   timeLimit = 30;
@@ -20,8 +20,14 @@ export class QuizCreateComponent {
   maxAttempts = 1;
   questions: any[] = [{ question: '', options: ['', '', '', ''], correctAnswer: 0, points: 1 }];
   error = '';
+  isEditMode = false;
+  quizId = '';
 
-  constructor(private quizService: QuizService, private router: Router) {
+  constructor(
+    private quizService: QuizService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     // Set default start time to now
     const now = new Date();
     this.startTime = now.toISOString().slice(0, 16);
@@ -29,6 +35,33 @@ export class QuizCreateComponent {
     // Set default end time to 1 week from now
     const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     this.endTime = weekLater.toISOString().slice(0, 16);
+  }
+
+  ngOnInit(): void {
+    this.quizId = this.route.snapshot.paramMap.get('id') || '';
+    if (this.quizId) {
+      this.isEditMode = true;
+      this.loadQuiz();
+    }
+  }
+
+  loadQuiz(): void {
+    this.quizService.getQuizById(this.quizId).subscribe({
+      next: (res) => {
+        const quiz = res.quiz;
+        this.title = quiz.title;
+        this.description = quiz.description;
+        this.timeLimit = quiz.timeLimit;
+        this.startTime = new Date(quiz.startTime).toISOString().slice(0, 16);
+        this.endTime = new Date(quiz.endTime).toISOString().slice(0, 16);
+        this.maxAttempts = quiz.maxAttempts;
+        this.questions = quiz.questions;
+      },
+      error: (err) => {
+        this.error = 'Failed to load quiz';
+        console.error(err);
+      }
+    });
   }
 
   addQuestion(): void {
@@ -57,9 +90,13 @@ export class QuizCreateComponent {
       questions: this.questions
     };
 
-    this.quizService.createQuiz(quizData).subscribe({
+    const request = this.isEditMode 
+      ? this.quizService.updateQuiz(this.quizId, quizData)
+      : this.quizService.createQuiz(quizData);
+
+    request.subscribe({
       next: () => this.router.navigate(['/faculty-dashboard']),
-      error: (err) => this.error = err.error?.message || 'Failed to create quiz'
+      error: (err) => this.error = err.error?.message || 'Failed to save quiz'
     });
   }
 }

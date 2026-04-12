@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>Create Quiz</h2>
+  <h2>{{ isEditMode ? 'Edit Quiz' : 'Create Quiz' }}</h2>
   <form (ngSubmit)="onSubmit()">
     <div>
       <label>Title:</label>
@@ -57,6 +57,6 @@
 
     <button type="button" (click)="addQuestion()">Add Question</button>
     <p *ngIf="error" class="error">{{ error }}</p>
-    <button type="submit">Create Quiz</button>
+    <button type="submit">{{ isEditMode ? 'Update Quiz' : 'Create Quiz' }}</button>
   </form>
 </div>

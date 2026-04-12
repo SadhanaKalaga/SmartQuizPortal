@@ -64,7 +64,10 @@
           <strong>{{ getAttemptCount(quiz._id) }}</strong> student(s) attempted
         </div>
 
-        <button (click)="deleteQuiz(quiz._id)" class="btn-delete">🗑️ Delete Quiz</button>
+        <div class="quiz-actions">
+          <button (click)="editQuiz(quiz._id)" class="btn-edit">✏️ Edit Quiz</button>
+          <button (click)="deleteQuiz(quiz._id)" class="btn-delete">🗑️ Delete Quiz</button>
+        </div>
       </div>
     </div>
   </section>

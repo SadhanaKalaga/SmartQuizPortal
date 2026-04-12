@@ -65,6 +65,10 @@ export class FacultyDashboardComponent implements OnInit {
     this.router.navigate(['/create-quiz']);
   }
 
+  editQuiz(id: string): void {
+    this.router.navigate(['/edit-quiz', id]);
+  }
+
   deleteQuiz(id: string): void {
     if (confirm('Delete this quiz?')) {
       this.quizService.deleteQuiz(id).subscribe({
