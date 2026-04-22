@@ -1,43 +1,50 @@
 # SmartQuizPortal — MEAN Stack Online Quiz Platform
+## Technical Documentation
 
 **Status:** ✅ Production Ready  
 **Version:** 1.0.0  
-**Last Updated:** April 12, 2026
+**Last Updated:** April 22, 2026
+
+---
 
 ## 📋 Table of Contents
 1. [Introduction](#1-introduction)
 2. [System Overview](#2-system-overview)
-3. [Architecture](#3-high-level-architecture)
-4. [Database Design](#4-database-design)
-5. [Backend Design](#5-backend-design)
-6. [Frontend Design](#6-frontend-angular)
-7. [Security](#7-security-features)
-8. [Running the Application](#8-running-the-application)
-9. [Features](#9-features-completed)
-10. [Testing](#10-testing-checklist)
-11. [Deployment](#11-deployment-considerations)
+3. [High-Level Architecture](#3-high-level-architecture)
+4. [Database Design (DB-First Approach)](#4-database-design-db-first-approach)
+5. [Backend Design (Node.js + Express)](#5-backend-design-nodejs--express)
+6. [Frontend – MEAN (Angular)](#6-frontend--mean-angular)
+7. [Quiz Attempt Flow](#7-quiz-attempt-flow)
+8. [Answer Visibility Control](#8-answer-visibility-control)
+9. [Security Considerations](#9-security-considerations)
+10. [Development Workflow](#10-development-workflow)
+11. [Future Enhancements](#11-future-enhancements)
+12. [Conclusion](#12-conclusion)
+13. [Quick Start Guide](#13-quick-start-guide)
 
 ---
 
 ## 1. Introduction
 
 ### 1.1 Purpose
-SmartQuizPortal is a production-ready online quiz and assessment platform built using the MEAN stack (MongoDB, Express, Angular 19, Node.js). Faculty can create and manage quizzes with full control over answer visibility, while students can attempt quizzes within time limits and view results instantly.
+This document defines the end-to-end technical design and development guidelines for SmartQuizPortal, an online quiz and assessment platform. The platform enables faculty to create and manage quizzes with full control over answer visibility, while students can attempt quizzes within time limits and view results instantly.
+
+The platform is built using the **MEAN stack** (MongoDB, Express, Angular 19, Node.js) and demonstrates production-ready full-stack architecture.
 
 ### 1.2 Target Audience
-- 🎓 Educational Institutions
-- 👨‍🏫 Faculty / Instructors
-- 👨‍🎓 Students
-- 💻 Developers learning full-stack development
+- Educational Institutions
+- Faculty / Instructors
+- Students
+- Developers learning full-stack development
 
-### 1.3 Key Highlights
-- ✅ Secure authentication with bcrypt password hashing
-- ✅ Role-based access control (Student/Faculty)
-- ✅ Answer visibility control by faculty
-- ✅ Attempt tracking with max attempts enforcement
-- ✅ Time-bound quiz scheduling
-- ✅ Automatic scoring and evaluation
-- ✅ Responsive modern UI
+### 1.3 Learning Outcomes
+- JWT-based authentication with bcrypt password hashing
+- Role-based access control (RBAC)
+- REST API design
+- MongoDB schema design with Mongoose ODM
+- Angular 19 standalone components architecture
+- Time-bound quiz scheduling and attempt tracking
+- Real-time countdown timer implementation
 
 ---
 
@@ -45,30 +52,30 @@ SmartQuizPortal is a production-ready online quiz and assessment platform built 
 
 ### 2.1 User Roles
 
-| Role | Capabilities |
+| Role | Description |
 |------|-------------|
-| **Faculty** | Create/edit/delete quizzes, control answer visibility, view student performance, manage own quizzes only |
-| **Student** | Attempt quizzes, view results, see correct answers (when released), track attempt history |
+| **Student** | Attempts quizzes, views results, tracks attempt history |
+| **Faculty** | Creates/manages quizzes, controls answer visibility, views student performance |
 
 ### 2.2 Core Features
 
-#### Faculty Features
-- ✅ Create quizzes with multiple-choice questions
-- ✅ Edit and delete own quizzes
-- ✅ Toggle answer visibility (release/hide correct answers)
-- ✅ View student attempt statistics
-- ✅ Time-bound quiz scheduling (start/end dates)
-- ✅ Configure max attempts per student
-- ✅ Resource isolation (cannot access other faculty's quizzes)
+**Student Features:**
+- View available quizzes
+- Attempt quizzes with countdown timer
+- Auto-submission on timeout
+- View immediate scores
+- See correct answers (when released by faculty)
+- Track attempt history
+- Max attempts enforcement
 
-#### Student Features
-- ✅ View available quizzes
-- ✅ Attempt quizzes with countdown timer
-- ✅ Auto-submission on timeout
-- ✅ Immediate score display
-- ✅ View correct answers (only when released by faculty)
-- ✅ Attempt history tracking
-- ✅ Max attempts enforcement
+**Faculty Features:**
+- Create quizzes with multiple-choice questions
+- Edit and delete own quizzes
+- Toggle answer visibility (release/hide correct answers)
+- View student attempt statistics
+- Time-bound quiz scheduling (start/end dates)
+- Configure max attempts per student
+- Resource isolation (cannot access other faculty's quizzes)
 
 ---
 
@@ -97,9 +104,11 @@ SmartQuizPortal is a production-ready online quiz and assessment platform built 
 └─────────────────────┘
 ```
 
+**Key Principle:** Single-page application with JWT authentication and role-based routing
+
 ---
 
-## 4. Database Design
+## 4. Database Design (DB-First Approach)
 
 ### 4.1 Technology
 - **Database:** MongoDB Atlas
@@ -164,7 +173,7 @@ SmartQuizPortal is a production-ready online quiz and assessment platform built 
 
 ---
 
-## 5. Backend Design
+## 5. Backend Design (Node.js + Express)
 
 ### 5.1 Technology Stack
 - **Runtime:** Node.js
@@ -264,7 +273,7 @@ exports.authorize = (...roles) => {
 
 ---
 
-## 6. Frontend (Angular)
+## 6. Frontend – MEAN (Angular)
 
 ### 6.1 Technology Stack
 - **Framework:** Angular 19
@@ -311,9 +320,55 @@ frontend/src/app/
 
 ---
 
-## 7. Security Features
+## 7. Quiz Attempt Flow
 
-### 7.1 Implemented Security Measures
+### 7.1 Student Workflow
+1. Student views available quizzes
+2. Clicks "Attempt Quiz"
+3. System checks:
+   - Quiz is active
+   - Current time is within start/end time
+   - Student hasn't exceeded max attempts
+4. Quiz loads with countdown timer
+5. Student selects answers
+6. On submit or timeout:
+   - Answers sent to backend
+   - Score calculated
+   - Attempt saved to database
+7. Results displayed immediately
+8. Correct answers shown only if `showAnswers` is true
+
+### 7.2 Validation Rules
+- Quiz must be active (`isActive: true`)
+- Current time must be between `startTime` and `endTime`
+- Student's attempt count must be less than `maxAttempts`
+- All questions must have 4 options
+- Correct answer must be between 0-3
+
+---
+
+## 8. Answer Visibility Control
+
+### 8.1 Current Scope
+- Faculty can toggle `showAnswers` flag for each quiz
+- When `showAnswers` is false:
+  - Students see only their score
+  - Correct answers are hidden
+- When `showAnswers` is true:
+  - Students see their score
+  - Correct answers are displayed
+  - Student's selected answers are highlighted
+
+### 8.2 Implementation
+- Backend filters out `correctAnswer` field when `showAnswers` is false
+- Frontend conditionally renders answer comparison UI
+- Toggle button available only to quiz owner
+
+---
+
+## 9. Security Considerations
+
+**Implemented Security Measures:**
 - ✅ **Password Hashing:** bcrypt with 10 salt rounds
 - ✅ **JWT Authentication:** 7-day token expiry
 - ✅ **Role-Based Access Control:** Faculty/Student separation
@@ -323,7 +378,7 @@ frontend/src/app/
 - ✅ **CORS Configuration:** Controlled cross-origin requests
 - ✅ **HTTP-Only Considerations:** Token stored in localStorage (can be upgraded to httpOnly cookies)
 
-### 7.2 Resource Isolation
+**Resource Isolation:**
 - Faculty can only view/edit/delete their own quizzes
 - Students can only view their own attempts
 - Correct answers hidden from students until faculty releases them
@@ -331,202 +386,42 @@ frontend/src/app/
 
 ---
 
-## 8. Running the Application
+## 10. Development Workflow
 
-### 8.1 Prerequisites
-- Node.js (v18+)
-- MongoDB Atlas account
-- npm or yarn
+### 10.1 Recommended Practice
+- Write clear comments before coding
+- Use meaningful file and function names
+- Follow RESTful API conventions
+- Implement error handling at all layers
+- Use TypeScript for type safety
+- Test authentication flow thoroughly
+- Validate all user inputs
 
-### 8.2 Quick Start
+### 10.2 Git Workflow
 ```bash
-# Clone repository
-git clone <repository-url>
-cd SmartQuizPortal
+# Create feature branch
+git checkout -b feature/your-feature-name
 
-# Run application (starts both backend and frontend)
-./start.sh
+# Make changes and commit
+git add .
+git commit -m "feat: descriptive commit message"
+
+# Push and create pull request
+git push origin feature/your-feature-name
 ```
 
-### 8.3 Manual Setup
-
-#### Backend
-```bash
-cd backend
-npm install
-
-# Create .env file
-cat > .env << EOF
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/smartquizportal
-JWT_SECRET=your_secure_random_string_minimum_32_characters
-PORT=5000
-NODE_ENV=development
-EOF
-
-# Seed database (creates test users and quiz)
-npm run seed
-
-# Start server
-npm run dev
-```
-
-#### Frontend
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### 8.4 Test Credentials
-After seeding:
-- **Student:** `student@test.com` / `password123`
-- **Faculty:** `faculty@test.com` / `password123`
-
-### 8.5 Access Points
-- **Frontend:** http://localhost:4200
-- **Backend API:** http://localhost:5000/api
+### 10.3 Commit Message Convention
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation changes
+- `style:` Code style changes
+- `refactor:` Code refactoring
+- `test:` Test additions/changes
+- `chore:` Build/config changes
 
 ---
 
-## 9. Features Completed
-
-### ✅ Authentication & Authorization
-- User registration with role selection
-- Login with email/password
-- JWT token-based authentication
-- Password hashing with bcrypt
-- Role-based route guards
-- Protected API endpoints
-
-### ✅ Faculty Features
-- Create quizzes with multiple questions
-- Edit own quizzes
-- Delete own quizzes
-- Toggle answer visibility
-- View student attempt statistics
-- Time-bound quiz scheduling
-- Configure max attempts
-- View only own quizzes (resource isolation)
-
-### ✅ Student Features
-- View available quizzes
-- Attempt quizzes with timer
-- Auto-submit on timeout
-- View immediate scores
-- See correct answers (when released)
-- Track attempt history
-- Max attempts enforcement
-- Attempt count persistence
-
-### ✅ Quiz Management
-- Multiple-choice questions (4 options)
-- Configurable time limits
-- Start/end date scheduling
-- Max attempts configuration
-- Active/inactive status
-- Automatic scoring
-- Answer visibility control
-
-### ✅ Technical Features
-- Responsive UI design
-- HTTP interceptors
-- Error handling
-- Loading states
-- Input validation
-- Debug logging
-- Database seeding
-- Git version control
-
----
-
-## 10. Testing Checklist
-
-### Authentication
-- [x] Register new user (student and faculty)
-- [x] Login with correct credentials
-- [x] Login fails with wrong credentials
-- [x] JWT token stored in localStorage
-- [x] Protected routes redirect to login
-- [x] Logout clears token
-
-### Faculty Operations
-- [x] Create quiz with multiple questions
-- [x] Edit own quiz
-- [x] Delete own quiz
-- [x] Cannot edit/delete other faculty's quizzes
-- [x] Toggle answer visibility
-- [x] View student attempt statistics
-- [x] Only see own quizzes in dashboard
-
-### Student Operations
-- [x] View available quizzes
-- [x] Attempt quiz with timer
-- [x] Auto-submit on timeout
-- [x] View results immediately
-- [x] See correct answers only when released
-- [x] Cannot attempt after max attempts reached
-- [x] Attempt count persists across sessions
-
-### Security
-- [x] Passwords hashed in database
-- [x] JWT required for protected routes
-- [x] Role-based access enforced
-- [x] Faculty cannot access student routes
-- [x] Students cannot access faculty routes
-- [x] Users can only access their own resources
-- [x] Correct answers hidden until released
-
----
-
-## 11. Deployment Considerations
-
-### 11.1 Environment Variables
-```bash
-# Production .env
-MONGODB_URI=mongodb+srv://prod_user:password@cluster.mongodb.net/smartquizportal
-JWT_SECRET=<generate-strong-random-string-min-32-chars>
-PORT=5000
-NODE_ENV=production
-```
-
-### 11.2 Production Checklist
-- [ ] Update CORS settings for production domain
-- [ ] Use strong JWT_SECRET (minimum 32 characters)
-- [ ] Enable HTTPS
-- [ ] Set secure cookie flags (if using cookies)
-- [ ] Configure MongoDB Atlas IP whitelist
-- [ ] Set up error monitoring (e.g., Sentry)
-- [ ] Configure rate limiting
-- [ ] Set up automated backups
-- [ ] Remove debug logging in production
-- [ ] Minify and optimize frontend build
-- [ ] Set up CI/CD pipeline
-- [ ] Configure environment-specific settings
-
-### 11.3 Recommended Hosting
-- **Frontend:** Vercel, Netlify, AWS S3 + CloudFront
-- **Backend:** Heroku, AWS EC2, DigitalOcean, Railway
-- **Database:** MongoDB Atlas (already cloud-based)
-
----
-
-## 12. Known Issues & Solutions
-
-### Issue: JWT Token Persistence
-**Problem:** Old JWT tokens may persist in browser localStorage  
-**Solution:** Clear browser localStorage or use incognito mode when switching accounts
-
-### Issue: Database Seeding
-**Problem:** Seed script fails if .env not loaded  
-**Solution:** Ensure `require('dotenv').config()` is at top of seed.js
-
-### Issue: Password Hashing
-**Problem:** `insertMany()` bypasses Mongoose pre-save hooks  
-**Solution:** Use `create()` in a loop to trigger password hashing
-
----
-
-## 13. Future Enhancements
+## 11. Future Enhancements
 
 ### Priority: High
 - [ ] Email verification on registration
@@ -550,58 +445,41 @@ NODE_ENV=production
 
 ---
 
-## 14. Contributing
+## 12. Conclusion
 
-### Git Workflow
-```bash
-# Create feature branch
-git checkout -b feature/your-feature-name
-
-# Make changes and commit
-git add .
-git commit -m "feat: descriptive commit message"
-
-# Push and create pull request
-git push origin feature/your-feature-name
-```
-
-### Commit Message Convention
-- `feat:` New feature
-- `fix:` Bug fix
-- `docs:` Documentation changes
-- `style:` Code style changes
-- `refactor:` Code refactoring
-- `test:` Test additions/changes
-- `chore:` Build/config changes
-
----
-
-## 15. License & Credits
+SmartQuizPortal demonstrates production-ready full-stack architecture using the MEAN stack. The platform implements secure authentication, role-based access control, time-bound quiz scheduling, and answer visibility management. The modular architecture allows for easy maintenance and future enhancements.
 
 **Project Name:** SmartQuizPortal  
 **Version:** 1.0.0  
 **Status:** Production Ready ✅  
 **Document Owner:** K. Sadhana  
-**Last Updated:** April 12, 2026
-
-**Technology Stack:**
-- MongoDB Atlas
-- Express.js
-- Angular 19
-- Node.js
-- JWT Authentication
-- bcrypt Password Hashing
-
-**Rating:** 9/10 - Production-ready educational platform
+**Last Updated:** April 22, 2026
 
 ---
 
-## 📞 Support
+## 13. Quick Start Guide
 
-For issues or questions:
-1. Check the [Testing Checklist](#10-testing-checklist)
-2. Review [Known Issues](#12-known-issues--solutions)
-3. Check backend console logs for debugging
-4. Clear browser localStorage if experiencing auth issues
+### Prerequisites
+- Node.js (v18+)
+- MongoDB Atlas account
+- npm or yarn
 
-**Happy Learning! 🎓**
+### Installation
+```bash
+# Clone repository
+git clone <repository-url>
+cd SmartQuizPortal
+
+# Run application
+./start.sh
+```
+
+### Test Credentials
+- **Student:** student@test.com / password123
+- **Faculty:** faculty@test.com / password123
+
+### Access Points
+- **Frontend:** http://localhost:4200
+- **Backend API:** http://localhost:5000/api
+
+
